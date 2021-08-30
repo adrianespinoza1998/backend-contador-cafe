@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 
 const {dbConnection} = require("../database/config");
 const usuarioRouter = require('../routes/usuarioRuoter');
+const authRouter = require('../routes/authRouter');
+const configRouter = require('../routes/configRoutes');
 
 class Server{
 
@@ -12,7 +14,9 @@ class Server{
         this.port = process.env.PORT;
 
         this.path = {
-            usuarios: '/api/usuarios'
+            usuarios: '/api/usuarios',
+            auth: '/api/auth',
+            config: '/api/config'
         }
 
         this.conectarDB();
@@ -34,7 +38,9 @@ class Server{
     }
 
     routes() {
-        this.app.use(this.path.usuarios,usuarioRouter);
+        this.app.use(this.path.usuarios, usuarioRouter);
+        this.app.use(this.path.auth, authRouter);
+        this.app.use(this.path.config, configRouter);
     }
 
     listen(){

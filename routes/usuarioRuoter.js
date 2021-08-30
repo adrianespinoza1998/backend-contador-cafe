@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const {signin, usuariosGet, editarUsuario, eliminarUsuario} = require('../controllers/usuarioController');
+const {signin, listarUsuarios, editarUsuario, eliminarUsuario, getUsuario} = require('../controllers/usuarioController');
 const {check} = require("express-validator");
 const {emailExiste, validarRol, existeId, usuarioEliminado} = require("../helpers/db-validators");
 const {validarCampos} = require("../middlewares/validar-campos");
@@ -9,9 +9,19 @@ const {validarJwt} = require("../middlewares/validar-jwt");
 
 const router = Router();
 
-router.get('/'/*,[
-    esAdminRole
-]*/, usuariosGet);
+router.get('/',[
+    validarJwt,
+    esAdminRole,
+    validarCampos
+], listarUsuarios);
+
+router.get('/:id',[
+    validarJwt,
+    esAdminRole,
+    check('id','No es un id valido').isMongoId(),
+    check('id').custom(existeId),
+    validarCampos
+], getUsuario);
 
 router.post('/',[
     check('correo','El correo no es válido').isEmail(),
@@ -22,16 +32,16 @@ router.post('/',[
 ],signin);
 
 router.put('/:id',[
-    //validarJwt,
+    validarJwt,
     check('id','No es un id valido').isMongoId(),
     check('id').custom(existeId),
-    //check('rol').custom(validarRol),
+    check('rol').custom(validarRol),
     validarCampos
 ],editarUsuario);
 
 router.delete('/:id',[
-    /*validarJwt,
-    esAdminRole,*/
+    validarJwt,
+    esAdminRole,
     check('id','No es un id valido').isMongoId(),
     check('id').custom(existeId),
     check('id').custom(usuarioEliminado),

@@ -1,9 +1,9 @@
-const {request, response} = require("express");
+const {request, response} = require('express');
 const bcrypt = require('bcryptjs');
 
-const Usuario = require('../models/usuario');
+const {Configuraciones, Usuario} = require('../models');
 
-const usuariosGet = async(req = request, res = response)=>{
+const listarUsuarios = async(req = request, res = response)=>{
     const [num_usuarios, usuarios] = await Promise.all([
         Usuario.countDocuments({estado:true}),
         Usuario.find({estado:true})
@@ -13,6 +13,17 @@ const usuariosGet = async(req = request, res = response)=>{
         num_usuarios,
         usuarios
     });
+}
+
+const getUsuario = async (req = request, res = response)=>{
+    const {id} = req.params;
+
+    const usuario = Usuario.findById(id);
+
+    res.status(200).json({
+        usuario
+    });
+
 }
 
 const signin = async(req = request, res = response)=>{
@@ -31,8 +42,16 @@ const signin = async(req = request, res = response)=>{
     const usuario = await new Usuario(data);
     await usuario.save();
 
+    const dataConfig = {
+        usuario: usuario.id
+    }
+
+    const configuraciones = await new Configuraciones(dataConfig);
+    await configuraciones.save();
+
     res.status(201).json({
-        usuario
+        usuario,
+        configuraciones
     });
 }
 
@@ -43,9 +62,11 @@ const editarUsuario = async(req = request, res = response)=>{
 
     const data = {
         nombre,
-        correo,
-        contrasena
+        correo
     }
+
+    const salt = bcrypt.genSaltSync();
+    data.contrasena = bcrypt.hashSync(contrasena, salt);
 
     if(img){
         data.img = img
@@ -69,8 +90,9 @@ const eliminarUsuario = async (req = request, res = response)=> {
 }
 
 module.exports = {
-    usuariosGet,
+    getUsuario,
     signin,
     editarUsuario,
-    eliminarUsuario
+    eliminarUsuario,
+    listarUsuarios
 }
