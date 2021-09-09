@@ -1,17 +1,15 @@
 const {request, response} = require("express");
 
-const esAdminRole = (req = request, res = response, next)=>{
+const esAdminRole = async(req = request, res = response, next)=>{
     if(!req.usuario){
         return res.status(500).json({
             msg: 'Validar admin ejecutado sin validar token'
         });
     }
 
-    const {nombre, role} = req.usuario;
-
-    if(role !=='ADMIN_ROLE'){
+    if(req.usuario.rol != 'ADMIN'){
         return res.status(401).json({
-            msg: `${nombre} no es administrador`
+            msg: `${req.usuario.rol} no es administrador`
         });
     }
 

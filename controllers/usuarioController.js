@@ -84,8 +84,12 @@ const eliminarUsuario = async (req = request, res = response)=> {
 
     const usuario = await Usuario.findByIdAndUpdate(id,{estado:false},{new:true});
 
+    const config = await Configuraciones.findByIdAndUpdate(usuario.configuraciones,
+        {estado:false}, {new:true});
+
     res.status(200).json({
-        usuario
+        usuario,
+        config
     });
 }
 

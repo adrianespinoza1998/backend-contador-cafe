@@ -14,7 +14,7 @@ const validarJwt = async(req = request,res = response, next)=> {
 
     try{
         const {uid} = jwt.verify(token, process.env.SECRET_KEY);
-        const usuario = await Usuario.findById(uid);
+        const usuario = await Usuario.findById(uid).populate('rol','rol');
 
         if(!usuario){
             return res.status(201).json({
@@ -28,7 +28,7 @@ const validarJwt = async(req = request,res = response, next)=> {
             });
         }
 
-        req.usuario = usuario;
+        req.usuario = usuario.toObject().rol;
 
         next();
     }catch (error){

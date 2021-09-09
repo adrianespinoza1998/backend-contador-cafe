@@ -25,9 +25,9 @@ const existeId = async(id)=>{
 }
 
 const usuarioEliminado = async(id)=>{
-    const usuario = await Usuario.findById(id,{estado:false});
+    const usuario = await Usuario.findById(id);
 
-    if(usuario){
+    if(!usuario.estado){
         throw new Error('La cuenta se encuentra bloqueada, por favor contacte con el administrador');
     }
 }

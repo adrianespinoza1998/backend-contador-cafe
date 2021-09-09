@@ -7,11 +7,11 @@ const editarConfig = async(req = request, res = response)=>{
     const {estricto, oscuro} = req.body;
 
     const data = {
-        estricto: (estricto === 'true') ? true : false,
-        oscuro: (oscuro === 'true') ? true : false
+        estricto,
+        oscuro
     }
 
-    const config = await Configuraciones.findByIdAndUpdate(id, data);
+    const config = await Configuraciones.findByIdAndUpdate(id, data,{new:true});
 
     res.status(200).json({
         config
