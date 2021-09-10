@@ -6,6 +6,7 @@ const {dbConnection} = require("../database/config");
 const usuarioRouter = require('../routes/usuarioRuoter');
 const authRouter = require('../routes/authRouter');
 const configRouter = require('../routes/configRoutes');
+const cucharadasRouter = require('../routes/cucharadasRoutes');
 
 class Server{
 
@@ -16,7 +17,8 @@ class Server{
         this.path = {
             usuarios: '/api/usuarios',
             auth: '/api/auth',
-            config: '/api/config'
+            config: '/api/config',
+            cucharadas: '/api/cucharadas'
         }
 
         this.conectarDB();
@@ -41,6 +43,7 @@ class Server{
         this.app.use(this.path.usuarios, usuarioRouter);
         this.app.use(this.path.auth, authRouter);
         this.app.use(this.path.config, configRouter);
+        this.app.use(this.path.cucharadas, cucharadasRouter);
     }
 
     listen(){

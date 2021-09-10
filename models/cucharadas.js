@@ -1,4 +1,5 @@
 const {Schema, model} = require('mongoose');
+const {body} = require("express-validator");
 
 const cucharadaSchema = Schema({
     porcion:{
@@ -12,6 +13,11 @@ const cucharadaSchema = Schema({
     fecha:{
         type: Date,
         required: true
+    },
+    estado:{
+        type: Boolean,
+        required: true,
+        default: true
     }
 });
 
